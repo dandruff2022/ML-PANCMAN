@@ -92,6 +92,11 @@ export default function MLTrain({ webcamRef }) {
   // Loop to predict direction
   async function runPredictionLoop() {
     while (true) {
+      if (model == null || webcamRef.current == null) {
+        await new Promise((resolve) => setTimeout(resolve, 250));
+        continue;
+      }
+
       setPredictionDirection(
         await predictDirection(webcamRef, truncatedMobileNet, model)
       );
