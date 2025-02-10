@@ -25,7 +25,7 @@ import {
   predictionAtom,
 } from "../GlobalState";
 import { useAtom } from "jotai";
-import { data, train } from "@tensorflow/tfjs";
+import { data, train, loadLayersModel } from "@tensorflow/tfjs";
 // import JSONWriter from "./JSONWriter";
 // import JSONLoader from "./JSONLoader";
 
@@ -150,6 +150,32 @@ export default function MLTrain({ webcamRef }) {
         >
           {trainingProgress == -1 ? "Train" : lossVal ? "Stop" : "Loading..."}
         </Button>
+
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={async () => {
+            const saveModel = await loadLayersModel("indexeddb://my-model");
+            setModel(saveModel);
+            console.log("Model loaded");
+          }}
+        >
+          Load
+        </Button>
+
+        {model !== null && trainingProgress === -1 && (
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={async () => {
+              await model.save("indexeddb://my-model");
+              console.log("Model saved");
+            }}
+          >
+            Save
+          </Button>
+        )}
+
         <LinearProgress
           variant="determinate"
           value={trainingProgress}
