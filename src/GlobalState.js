@@ -1,5 +1,6 @@
 import { atom } from "jotai";
 import { loadTruncatedMobileNet } from "./model";
+import { atomWithStorage } from "jotai/utils";
 
 // ---- Configurations ----
 export const epochsAtom = atom(100); // Number of epochs
@@ -12,11 +13,9 @@ export const predictionAtom = atom(null); // Current prediction
 // ---- Model Training ----
 export const modelAtom = atom(null); // Model
 export const truncatedMobileNetAtom = atom(loadTruncatedMobileNet()); // truncatedMobileNet
-export const imgSrcArrAtom = atom([]); // collected images, formate {src: string, label: string}
+export const imgSrcArrAtom = atomWithStorage([]); // collected images, formate {src: string, label: string}
 
 // ---- UI Display ----
 export const lossAtom = atom(null); // Loss value
 export const trainingProgressAtom = atom(-1); // Training progress
 export const stopTrainingAtom = atom(false); // Flag to stop training
-
-
