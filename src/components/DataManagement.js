@@ -122,7 +122,7 @@ export default function DataManagement() {
                     model={model}
                   />
                 ) : (
-                  <Typography variant="subtitle1">model not loaded</Typography>
+                  <Typography variant="subtitle1">model loading...</Typography>
                 )}
               </Paper>
             ))}
