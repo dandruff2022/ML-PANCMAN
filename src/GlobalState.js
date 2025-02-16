@@ -13,7 +13,7 @@ export const predictionAtom = atom(null); // Current prediction
 // ---- Model Training ----
 export const modelAtom = atom(null); // Model
 export const truncatedMobileNetAtom = atom(loadTruncatedMobileNet()); // truncatedMobileNet
-export const imgSrcArrAtom = atomWithStorage([]); // collected images, formate {src: string, label: string}
+export const imgSrcArrAtom = atomWithStorage("imgSrcArr", []);
 
 // ---- UI Display ----
 export const lossAtom = atom(null); // Loss value
