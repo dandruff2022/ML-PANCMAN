@@ -18,7 +18,9 @@ import {
   truncatedMobileNetAtom,
   modelAtom,
 } from "../GlobalState";
-import { predict } from "../model";
+import { predict } from "../model"; // Your predict function
+import { loadLayersModel } from "@tensorflow/tfjs";
+import { loadTruncatedMobileNet, base64ToTensor } from "../model";
 import { useAtom } from "jotai";
 
 const DIRECTIONS = {
@@ -40,7 +42,8 @@ async function SortImgSrcArr(
     imgSrcArr
       .filter((d) => d.label === directionKey)
       .map(async (imgSrc) => {
-        const res = await predict(truncatedMobileNet, model, imgSrc.src, true);
+        const imgTensor = await base64ToTensor(imgSrc.src);
+        const res = await predict(truncatedMobileNet, model, imgTensor, true);
         results.push({ src: imgSrc, uncertainty: res.uncertainty });
       })
   );
@@ -50,8 +53,30 @@ async function SortImgSrcArr(
 
 export default function DataManagement() {
   const [imgSrcArr, setImgSrcArr] = useAtom(imgSrcArrAtom);
-  const [truncatedMobileNet] = useAtom(truncatedMobileNetAtom);
-  const [model] = useAtom(modelAtom);
+  const [truncatedMobileNet, setTruncatedMobileNet] = useAtom(
+    truncatedMobileNetAtom
+  );
+  const [model, setModel] = useAtom(modelAtom);
+
+  // Load both models asynchronously
+  useEffect(() => {
+    async function loadModels() {
+      try {
+        const tm = await loadTruncatedMobileNet();
+        setTruncatedMobileNet(tm);
+      } catch (error) {
+        console.error("Failed to load truncatedMobileNet", error);
+      }
+      try {
+        const loadedModel = await loadLayersModel("indexeddb://my-model");
+        setModel(loadedModel);
+        console.log("Model loaded");
+      } catch (error) {
+        console.error("Failed to load model", error);
+      }
+    }
+    loadModels();
+  }, [setTruncatedMobileNet, setModel]);
 
   return (
     <Box
